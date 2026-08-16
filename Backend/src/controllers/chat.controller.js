@@ -3,6 +3,7 @@ import messageModel from "../models/message.model.js";
 import { generateMessage, generateTitle } from "../services/ai.service.js";
 
 export async function sendMessageToAI(req, res) {
+  const userId = req.user.userId;
   const { message, chat: chatId } = req.body;
   let chat;
   // New chat
@@ -33,7 +34,7 @@ export async function sendMessageToAI(req, res) {
     .sort({ createdAt: 1 });
 
   // Send complete history to AI
-  const aiResponse = await generateMessage(messages);
+  const aiResponse = await generateMessage(messages , userId);
 
   // Save AI response
   const aiMessage = await messageModel.create({
@@ -42,7 +43,7 @@ export async function sendMessageToAI(req, res) {
     role: "ai",
   });
 
-  res.json({
+  res.status(201).json({
     chat,
     userMessage,
     aiMessage,

@@ -6,6 +6,7 @@ import * as z from "zod";
 import { sendEmail } from "./mail.service.js";
 import { searchWeather } from "./weather.service.js";
 import { mathCal } from "./math.service.js";
+import { getMemory, saveMemory } from "./memory.service.js";
 
 const mistralModel = new ChatMistralAI({
   model: "mistral-small-latest",
@@ -59,6 +60,37 @@ const getCurrentDateTime = tool(
   },
 );
 
+const saveMemoryTool = tool(
+  async ({ memory }, runtime) => {
+    const userId = runtime.context.userId;
+    return await saveMemory({
+      memory,
+      userId,
+    });
+  },
+  {
+    name: "save-memory",
+    description:
+      "Save important, user-specific information that should be remembered across future conversations.",
+    schema: z.object({
+      memory: z.string().describe("Important user information to remember"),
+    }),
+  },
+);
+
+const searchMemoryTool = tool(
+  async (_, runtime) => {
+    const userId = runtime.context.userId;
+    return await getMemory({ userId });
+  },
+  {
+    name: "search-memory",
+    description:
+      "Retrieve the user's saved memories that are relevant to the current conversation.",
+    schema: z.object({}),
+  },
+);
+
 const calculatorTool = tool(mathCal, {
   name: "calculator",
   description: `
@@ -75,35 +107,48 @@ const calculatorTool = tool(mathCal, {
 const tools = [
   webSearchTool,
   mailSender,
+  searchMemoryTool,
   weatherTool,
   getCurrentDateTime,
+  saveMemoryTool,
   calculatorTool,
 ];
 const agent = createAgent({
   model: mistralModel,
   tools,
+  contextSchema: z.object({
+    userId: z.string(),
+  }),
 });
 
-export async function generateMessage(messages) {
-  const response = await agent.invoke({
-    messages: [
-      new SystemMessage(
-        "You are a helpful assistant that provides responses to user messages. Please respond in a clear and concise manner.",
-      ),
-      ...messages.map((msg) => {
-        if (msg.role === "user") {
-          return new HumanMessage(msg.content);
-        }
+export async function generateMessage(messages, userId) {
+  const response = await agent.invoke(
+    {
+      messages: [
+        new SystemMessage(
+          "You are a helpful assistant that provides responses to user messages.",
+        ),
+        ...messages.map((msg) => {
+          if (msg.role === "user") {
+            return new HumanMessage(msg.content);
+          }
 
-        if (msg.role === "ai") {
-          return new AIMessage(msg.content);
-        }
-      }),
-    ],
-  });
+          if (msg.role === "ai") {
+            return new AIMessage(msg.content);
+          }
+        }),
+      ],
+    },
+    {
+      context: {
+        userId: userId,
+      },
+    },
+  );
 
   return response.messages[response.messages.length - 1].content;
 }
+
 export async function generateTitle(message) {
   const title = await mistralModel.invoke([
     new SystemMessage(
