@@ -1,11 +1,11 @@
 import React from "react";
 
-const History = ({ chat, handleOpenMessage }) => {
+const History = ({ chat, handleOpenMessage, handleClearChats }) => {
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-white">Recent searches</h3>
-        <button className="text-xs text-violet-300">Clear</button>
+        <button onClick={handleClearChats} className="text-xs text-violet-30 cursor-pointer">Clear</button>
       </div>
       <div className="space-y-2">
         {Object.values(chat).map((title) => {

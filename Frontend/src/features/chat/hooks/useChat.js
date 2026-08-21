@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { initializeSocketConnection } from "../services/socket.service";
-import { getChat, getMessage, sendMessage } from "../services/api.service";
+import { clearChats, getChat, getMessage, sendMessage } from "../services/api.service";
 import { ChatContext } from "../ChatContext";
 
 export const useChat = () => {
@@ -9,10 +9,8 @@ export const useChat = () => {
     chat,
     setChat,
     setCurrentChatId,
-    setMessages,
     setCurrentChat,
     currentChat,
-    messages,
     currentChatId,
   } = Context;
 
@@ -89,6 +87,18 @@ export const useChat = () => {
     }));
     setCurrentChatId(chatId);
   }
+
+  async function handleClearChats() {
+    try {
+      await clearChats();
+      setChat({});
+      setCurrentChat({});
+      setCurrentChatId(null);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return {
     initializeSocketConnection,
     handleSendMessage,
@@ -96,7 +106,7 @@ export const useChat = () => {
     currentChat,
     handleGetMessage,
     chat,
-    messages,
     currentChatId,
+    handleClearChats,
   };
 };

@@ -14,6 +14,7 @@ const Dashboard = () => {
     handleGetChat,
     currentChat,
     chat,
+    handleClearChats,
     currentChatId,
     handleGetMessage,
   } = useChat();
@@ -66,7 +67,7 @@ const Dashboard = () => {
           <TrendingTopics topics={topics} />
 
           {/* history */}
-          <History chat={chat} handleOpenMessage={handleOpenMessage} />
+          <History handleClearChats={handleClearChats} chat={chat} handleOpenMessage={handleOpenMessage} />
         </main>
       </div>
     </div>
