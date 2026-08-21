@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  clearChats,
   getChat,
   getMessage,
   sendMessageToAI,
@@ -11,6 +12,8 @@ const chatRouter = Router();
 chatRouter.post("/message", authMiddleware, sendMessageToAI);
 
 chatRouter.get("/", authMiddleware, getChat);
+
+chatRouter.delete("/clear", authMiddleware, clearChats);
 
 chatRouter.get("/:chatId/message", authMiddleware, getMessage);
 
