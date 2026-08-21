@@ -8,7 +8,15 @@ const Login = () => {
   const [username, setUsername] = useState("");
 
   const navigate = useNavigate();
-  const { handleLogin } = useAuth();
+  const { handleLogin , loading} = useAuth();
+
+   if (loading) {
+     return (
+       <main className="w-full h-screen bg-neutral-950 text-slate-200 flex justify-center items-center">
+         <h1>Loading....</h1>
+       </main>
+     );
+   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -6,10 +6,9 @@ import { useAuth } from "../features/auth/hooks/useAuth";
 
 const App = () => {
 
-  const auth = useAuth();
-
+  const {handleGetMe} = useAuth();
   useEffect(() => {
-    auth.handleGetMe();
+    handleGetMe();
   }, []);
   return (
     <BrowserRouter>
