@@ -14,7 +14,6 @@ export async function saveMemory({ memory, userId }) {
 }
 
 export async function getMemory({ userId }) {
-  
   const memories = await Memory.find({
     userId: userId,
   });

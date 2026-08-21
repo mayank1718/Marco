@@ -86,7 +86,7 @@ const searchMemoryTool = tool(
   {
     name: "search-memory",
     description:
-      "Retrieve the user's saved memories that are relevant to the current conversation.",
+      "Retrieve the user's saved memories that are relevant to the current conversation. Use this tool to access previously stored information that may help provide context or continuity in the conversation. This tool is useful for recalling important details, preferences, or any other information that the user has chosen to save for future reference. Use this tool when the user asks about previously saved information or when you need to reference past interactions to provide a more informed response. Give a concise summary of the relevant memories without repeating unnecessary details.",
     schema: z.object({}),
   },
 );
