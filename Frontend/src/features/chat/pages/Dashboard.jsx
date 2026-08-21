@@ -64,7 +64,7 @@ const Dashboard = () => {
           />
 
           {/* trending topics */}
-          <TrendingTopics topics={topics} />
+          <TrendingTopics setMessage={setMessage} topics={topics} />
 
           {/* history */}
           <History handleClearChats={handleClearChats} chat={chat} handleOpenMessage={handleOpenMessage} />
